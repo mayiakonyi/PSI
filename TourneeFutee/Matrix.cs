@@ -190,6 +190,41 @@
 
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
 
+        public Matrix Clone() // permet d'avoir une copie pour tester les itinéraires
+        {
+            Matrix copie = new Matrix(this.NbRows, this.NbColumns, this.DefaultValue);
+            for (int i = 0; i < this.NbRows; i++)
+            {
+                for (int j = 0; j < this.NbColumns; j++)
+                {
+                   
+                    float valeurActuelle = this.GetValue(i, j);
+                    copie.SetValue(i, j, valeurActuelle);
+                }
+            }
+
+            return copie;
+        }
+
+        public void Clear() //permet de reinitialiser le calcul d'un itinéraire
+        {
+            for (int i = 0; i < NbRows; i++)
+            {
+                for (int j = 0; j < NbColumns; j++)
+                {
+                    donnee[i][j] = defaultValue;
+                }
+            }
+        }
+
+        public bool EstCarré() // test si matrice est carré pour simplifier l'itinéraire
+        {
+            return NbRows == NbColumns && NbColumns > 0;
+        }
+
+
+
+
     }
 
 
