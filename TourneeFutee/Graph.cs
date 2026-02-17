@@ -6,24 +6,24 @@ namespace TourneeFutee
     public class Graph
     {
         // TODO : ajouter tous les attributs que vous jugerez pertinents
-        private readonly bool _directed; // indique si le graphe est oriente ou pas
-        private readonly float _noEdgeValue; // valeur pour signaler l'absence d'un arc
-        private readonly Matrix _adjacencyMatrix; // matrice d'adjacence pour stocker les arcs
-        private readonly Dictionary<string, int> _nameToIndex; // associe un nom de sommet a son index
-        private readonly List<float> _vertexValues; // stocke les valeurs des sommets
-        private readonly List<string> _indexToName; // permet de retrouver le nom d'un sommet via son index
+        private readonly bool direction; // indique si le graphe est oriente ou pas
+        private readonly float pasarcval; // valeur pour signaler l'absence d'un arc
+        private readonly Matrix matriceadj; // matrice d'adjacence pour stocker les arcs
+        private readonly Dictionary<string, int> nomversindex; // associe un nom de sommet a son index
+        private readonly List<float> stockvalsom; // stocke les valeurs des sommets
+        private readonly List<string> indexversnom; // permet de retrouver le nom d'un sommet via son index
 
         // --- Construction du graphe ---
         // Contruit un graphe (directed=true => orienté)
         // La valeur noEdgeValue est le poids modélisant l'absence d'un arc (0 par défaut)
         public Graph(bool directed, float noEdgeValue = 0)
         {
-            _directed = directed; // sauvegarde si le graphe est oriente
-            _noEdgeValue = noEdgeValue; // sauvegarde valeur pour pas d'arc
-            _adjacencyMatrix = new Matrix(0, 0, noEdgeValue); // init matrice vide
-            _nameToIndex = new Dictionary<string, int>(); // init dictionnaire noms->index
-            _vertexValues = new List<float>(); // init liste valeurs sommets
-            _indexToName = new List<string>(); // init liste noms par index
+            direction = directed; // sauvegarde si le graphe est oriente
+            pasarcval = noEdgeValue; // sauvegarde valeur pour pas d'arc
+            matriceadj = new Matrix(0, 0, noEdgeValue); // init matrice vide
+            nomversindex = new Dictionary<string, int>(); // init dictionnaire noms->index
+            stockvalsom = new List<float>(); // init liste valeurs sommets
+            indexversnom = new List<string>(); // init liste noms par index
         }
 
         // --- Proprietes ---
@@ -32,7 +32,7 @@ namespace TourneeFutee
         // Lecture seule
         public int Order
         {
-            get { return _vertexValues.Count; } // le nb de sommets
+            get { return stockvalsom.Count; } // le nb de sommets
             // pas de set
         }
 
@@ -40,7 +40,7 @@ namespace TourneeFutee
         // Lecture seule
         public bool Directed
         {
-            get { return _directed; } // renvoie si le graphe est oriente
+            get { return direction; } // renvoie si le graphe est oriente
             // pas de set
         }
 
@@ -50,39 +50,39 @@ namespace TourneeFutee
         // Lève une ArgumentException s'il existe deja un sommet avec le meme nom dans le graphe
         public void AddVertex(string name, float value = 0)
         {
-            if (_nameToIndex.ContainsKey(name))
+            if (nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet existe deja
 
             int newIndex = Order; // nouvel index = nb actuel de sommets
 
-            _nameToIndex[name] = newIndex; // map nom->index
-            _vertexValues.Add(value); // ajoute valeur sommet
-            _indexToName.Add(name); // ajoute nom dans liste index->nom
+            nomversindex[name] = newIndex; // map nom->index
+            stockvalsom.Add(value); // ajoute valeur sommet
+            indexversnom.Add(name); // ajoute nom dans liste index->nom
 
-            _adjacencyMatrix.AddRow(newIndex); // agrandit matrice avec nouvelle ligne
-            _adjacencyMatrix.AddColumn(newIndex); // agrandit matrice avec nouvelle colonne
+            matriceadj.AddRow(newIndex); // agrandit matrice avec nouvelle ligne
+            matriceadj.AddColumn(newIndex); // agrandit matrice avec nouvelle colonne
         }
 
         // Supprime le sommet de nom name du graphe (et tous les arcs associes)
         // Lève une ArgumentException si le sommet n'a pas ete trouve dans le graphe
         public void RemoveVertex(string name)
         {
-            if (!_nameToIndex.ContainsKey(name))
+            if (!nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
-            int index = _nameToIndex[name]; // recuperer index du sommet
+            int index = nomversindex[name]; // recuperer index du sommet
 
-            _adjacencyMatrix.RemoveRow(index); // supprime ligne dans matrice
-            _adjacencyMatrix.RemoveColumn(index); // supprime colonne dans matrice
+            matriceadj.RemoveRow(index); // supprime ligne dans matrice
+            matriceadj.RemoveColumn(index); // supprime colonne dans matrice
 
-            _vertexValues.RemoveAt(index); // supprime valeur du sommet
-            _indexToName.RemoveAt(index); // supprime nom du sommet
-            _nameToIndex.Remove(name); // supprime mapping nom->index
+            stockvalsom.RemoveAt(index); // supprime valeur du sommet
+            indexversnom.RemoveAt(index); // supprime nom du sommet
+            nomversindex.Remove(name); // supprime mapping nom->index
 
             // mise a jour des index pour les sommets apres celui supprime
-            for (int i = index; i < _indexToName.Count; i++)
+            for (int i = index; i < indexversnom.Count; i++)
             {
-                _nameToIndex[_indexToName[i]] = i;
+                nomversindex[indexversnom[i]] = i;
             }
         }
 
@@ -90,20 +90,20 @@ namespace TourneeFutee
         // Lève une ArgumentException si le sommet n'a pas ete trouve dans le graphe
         public float GetVertexValue(string name)
         {
-            if (!_nameToIndex.ContainsKey(name))
+            if (!nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
-            return _vertexValues[_nameToIndex[name]]; // renvoie valeur
+            return stockvalsom[nomversindex[name]]; // renvoie valeur
         }
 
         // Affecte la valeur du sommet de nom name a value
         // Lève une ArgumentException si le sommet n'a pas ete trouve dans le graphe
         public void SetVertexValue(string name, float value)
         {
-            if (!_nameToIndex.ContainsKey(name))
+            if (!nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
-            _vertexValues[_nameToIndex[name]] = value; // met a jour valeur
+            stockvalsom[nomversindex[name]] = value; // met a jour valeur
         }
 
         // Renvoie la liste des noms des voisins du sommet de nom vertexName
@@ -111,17 +111,17 @@ namespace TourneeFutee
         // Lève une ArgumentException si le sommet n'a pas ete trouve dans le graphe
         public List<string> GetNeighbors(string vertexName)
         {
-            if (!_nameToIndex.ContainsKey(vertexName))
+            if (!nomversindex.ContainsKey(vertexName))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
             List<string> neighborNames = new List<string>(); // liste pour stocker voisins
-            int i = _nameToIndex[vertexName]; // index du sommet
+            int i = nomversindex[vertexName]; // index du sommet
 
             for (int j = 0; j < Order; j++)
             {
                 // si valeur dans matrice != noEdgeValue alors arc existe
-                if (_adjacencyMatrix.GetValue(i, j) != _noEdgeValue)
-                    neighborNames.Add(_indexToName[j]); // ajoute nom du voisin
+                if (matriceadj.GetValue(i, j) != pasarcval)
+                    neighborNames.Add(indexversnom[j]); // ajoute nom du voisin
             }
 
             return neighborNames; // retourne liste voisins
@@ -136,19 +136,19 @@ namespace TourneeFutee
          * - il existe deja un arc avec ces extremites */
         public void AddEdge(string sourceName, string destinationName, float weight = 1)
         {
-            if (!_nameToIndex.ContainsKey(sourceName) || !_nameToIndex.ContainsKey(destinationName))
+            if (!nomversindex.ContainsKey(sourceName) || !nomversindex.ContainsKey(destinationName))
                 throw new ArgumentException(); // erreur si sommets manquants
 
-            int i = _nameToIndex[sourceName]; // index source
-            int j = _nameToIndex[destinationName]; // index dest
+            int i = nomversindex[sourceName]; // index source
+            int j = nomversindex[destinationName]; // index dest
 
-            if (_adjacencyMatrix.GetValue(i, j) != _noEdgeValue)
+            if (matriceadj.GetValue(i, j) != pasarcval)
                 throw new ArgumentException(); // erreur si arc existe deja
 
-            _adjacencyMatrix.SetValue(i, j, weight); // ajoute arc
+            matriceadj.SetValue(i, j, weight); // ajoute arc
 
-            if (!_directed)
-                _adjacencyMatrix.SetValue(j, i, weight); // ajoute arc inverse si non oriente
+            if (!direction)
+                matriceadj.SetValue(j, i, weight); // ajoute arc inverse si non oriente
         }
 
         /* Supprime l'arc allant du sommet nomme sourceName au sommet nomme destinationName du graphe
@@ -158,19 +158,19 @@ namespace TourneeFutee
          * - l'arc n'existe pas */
         public void RemoveEdge(string sourceName, string destinationName)
         {
-            if (!_nameToIndex.ContainsKey(sourceName) || !_nameToIndex.ContainsKey(destinationName))
+            if (!nomversindex.ContainsKey(sourceName) || !nomversindex.ContainsKey(destinationName))
                 throw new ArgumentException(); // erreur si sommets manquants
 
-            int i = _nameToIndex[sourceName]; // index source
-            int j = _nameToIndex[destinationName]; // index dest
+            int i = nomversindex[sourceName]; // index source
+            int j = nomversindex[destinationName]; // index dest
 
-            if (_adjacencyMatrix.GetValue(i, j) == _noEdgeValue)
+            if (matriceadj.GetValue(i, j) == pasarcval)
                 throw new ArgumentException(); // erreur si arc inexistant
 
-            _adjacencyMatrix.SetValue(i, j, _noEdgeValue); // supprime arc
+            matriceadj.SetValue(i, j, pasarcval); // supprime arc
 
-            if (!_directed)
-                _adjacencyMatrix.SetValue(j, i, _noEdgeValue); // supprime arc inverse si non oriente
+            if (!direction)
+                matriceadj.SetValue(j, i, pasarcval); // supprime arc inverse si non oriente
         }
 
         /* Renvoie le poids de l'arc allant du sommet nomme sourceName au sommet nomme destinationName
@@ -180,15 +180,15 @@ namespace TourneeFutee
          * - l'arc n'existe pas */
         public float GetEdgeWeight(string sourceName, string destinationName)
         {
-            if (!_nameToIndex.ContainsKey(sourceName) || !_nameToIndex.ContainsKey(destinationName))
+            if (!nomversindex.ContainsKey(sourceName) || !nomversindex.ContainsKey(destinationName))
                 throw new ArgumentException(); // erreur si sommets manquants
 
-            int i = _nameToIndex[sourceName]; // index source
-            int j = _nameToIndex[destinationName]; // index dest
+            int i = nomversindex[sourceName]; // index source
+            int j = nomversindex[destinationName]; // index dest
 
-            float weight = _adjacencyMatrix.GetValue(i, j); // recup poids
+            float weight = matriceadj.GetValue(i, j); // recup poids
 
-            if (weight == _noEdgeValue)
+            if (weight == pasarcval)
                 throw new ArgumentException(); // erreur si pas d'arc
 
             return weight; // retourne poids
@@ -199,16 +199,16 @@ namespace TourneeFutee
          * Lève une ArgumentException si un des sommets n'a pas ete trouve dans le graphe (source et/ou destination) */
         public void SetEdgeWeight(string sourceName, string destinationName, float weight)
         {
-            if (!_nameToIndex.ContainsKey(sourceName) || !_nameToIndex.ContainsKey(destinationName))
+            if (!nomversindex.ContainsKey(sourceName) || !nomversindex.ContainsKey(destinationName))
                 throw new ArgumentException(); // erreur si sommets manquants
 
-            int i = _nameToIndex[sourceName]; // index source
-            int j = _nameToIndex[destinationName]; // index dest
+            int i = nomversindex[sourceName]; // index source
+            int j = nomversindex[destinationName]; // index dest
 
-            _adjacencyMatrix.SetValue(i, j, weight); // modifie poids arc
+            matriceadj.SetValue(i, j, weight); // modifie poids arc
 
-            if (!_directed)
-                _adjacencyMatrix.SetValue(j, i, weight); // modifie arc inverse si non oriente
+            if (!direction)
+                matriceadj.SetValue(j, i, weight); // modifie arc inverse si non oriente
         }
 
         // TODO : ajouter toutes les methodes que vous jugerez pertinentes
