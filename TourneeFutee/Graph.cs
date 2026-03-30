@@ -22,8 +22,8 @@ namespace TourneeFutee
             pasarcval = noEdgeValue; // sauvegarde valeur pour pas d'arc
             matriceadj = new Matrix(0, 0, noEdgeValue); // init matrice vide
             nomversindex = new Dictionary<string, int>(); // init dictionnaire noms->index
-            stockvalsom = new List<float>(); // init liste valeurs sommets
-            indexversnom = new List<string>(); // init liste noms par index
+            stockvalsom = new List<float>(); 
+            indexversnom = new List<string>(); 
         }
 
         // --- Proprietes ---
@@ -32,7 +32,11 @@ namespace TourneeFutee
         // Lecture seule
         public int Order
         {
-            get { return stockvalsom.Count; } // le nb de sommets
+            get
+            { 
+                return stockvalsom.Count; 
+            } 
+            // le nb de sommets
             // pas de set
         }
 
@@ -40,7 +44,11 @@ namespace TourneeFutee
         // Lecture seule
         public bool Directed
         {
-            get { return direction; } // renvoie si le graphe est oriente
+            get
+            {
+                return direction; 
+            } 
+            // renvoie si le graphe est oriente
             // pas de set
         }
 
@@ -54,13 +62,12 @@ namespace TourneeFutee
                 throw new ArgumentException(); // erreur si sommet existe deja
 
             int newIndex = Order; // nouvel index = nb actuel de sommets
-
             nomversindex[name] = newIndex; // map nom->index
-            stockvalsom.Add(value); // ajoute valeur sommet
-            indexversnom.Add(name); // ajoute nom dans liste index->nom
-
-            matriceadj.AddRow(newIndex); // agrandit matrice avec nouvelle ligne
-            matriceadj.AddColumn(newIndex); // agrandit matrice avec nouvelle colonne
+            //Ajout
+            stockvalsom.Add(value); 
+            indexversnom.Add(name); 
+            matriceadj.AddRow(newIndex); 
+            matriceadj.AddColumn(newIndex); 
         }
 
         // Supprime le sommet de nom name du graphe (et tous les arcs associes)
@@ -70,14 +77,14 @@ namespace TourneeFutee
             if (!nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
-            int index = nomversindex[name]; // recuperer index du sommet
+            int index = nomversindex[name];
 
-            matriceadj.RemoveRow(index); // supprime ligne dans matrice
-            matriceadj.RemoveColumn(index); // supprime colonne dans matrice
-
-            stockvalsom.RemoveAt(index); // supprime valeur du sommet
-            indexversnom.RemoveAt(index); // supprime nom du sommet
-            nomversindex.Remove(name); // supprime mapping nom->index
+            //Supression 
+            matriceadj.RemoveRow(index); 
+            matriceadj.RemoveColumn(index); 
+            stockvalsom.RemoveAt(index); 
+            indexversnom.RemoveAt(index); 
+            nomversindex.Remove(name); 
 
             // mise a jour des index pour les sommets apres celui supprime
             for (int i = index; i < indexversnom.Count; i++)
@@ -93,7 +100,7 @@ namespace TourneeFutee
             if (!nomversindex.ContainsKey(name))
                 throw new ArgumentException(); // erreur si sommet inexistant
 
-            return stockvalsom[nomversindex[name]]; // renvoie valeur
+            return stockvalsom[nomversindex[name]];
         }
 
         // Affecte la valeur du sommet de nom name a value
@@ -101,9 +108,9 @@ namespace TourneeFutee
         public void SetVertexValue(string name, float value)
         {
             if (!nomversindex.ContainsKey(name))
-                throw new ArgumentException(); // erreur si sommet inexistant
+                throw new ArgumentException(); 
 
-            stockvalsom[nomversindex[name]] = value; // met a jour valeur
+            stockvalsom[nomversindex[name]] = value; // maj valeur
         }
 
         // Renvoie la liste des noms des voisins du sommet de nom vertexName
@@ -112,10 +119,10 @@ namespace TourneeFutee
         public List<string> GetNeighbors(string vertexName)
         {
             if (!nomversindex.ContainsKey(vertexName))
-                throw new ArgumentException(); // erreur si sommet inexistant
+                throw new ArgumentException(); 
 
             List<string> neighborNames = new List<string>(); // liste pour stocker voisins
-            int i = nomversindex[vertexName]; // index du sommet
+            int i = nomversindex[vertexName]; 
 
             for (int j = 0; j < Order; j++)
             {
@@ -124,7 +131,7 @@ namespace TourneeFutee
                     neighborNames.Add(indexversnom[j]); // ajoute nom du voisin
             }
 
-            return neighborNames; // retourne liste voisins
+            return neighborNames; 
         }
 
         // --- Gestion des arcs ---
