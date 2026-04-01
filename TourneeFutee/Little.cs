@@ -58,7 +58,30 @@
                 }
             }
 
-            
+            for (int j = 0; j < m.NbColumns; j++)
+            {
+                float min = float.PositiveInfinity;
+                for (int i = 0; i < m.NbRows; i++)
+                {
+                    if (m.GetValue(i, j) < min)
+                    {
+                        min = m.GetValue(i, j);
+                    }
+                }
+                if (!float.IsPositiveInfinity(min) && min > 0)
+                {
+                    reductionTotale += min;
+                    for (int i = 0; i < m.NbRows; i++)
+                    {
+                        m.SetValue(i, j, m.GetValue(i, j) - min);
+                    }
+                }
+            }
+
+            return reductionTotale;
+
+
+
         }
 
         // Renvoie le regret de valeur maximale dans la matrice de coûts `m` sous la forme d'un tuple `(int i, int j, float value)`
