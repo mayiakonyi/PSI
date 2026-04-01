@@ -5,11 +5,20 @@
     public class Little
     {
         // TODO : ajouter tous les attributs que vous jugerez pertinents 
+        private Graph graph;
+        private float meilleurCout;
+        private Tour meilleureTournee;
+        private int nbCities;
+
 
         // Instancie le planificateur en spécifiant le graphe modélisant un problème de voyageur de commerce
         public Little(Graph graph)
         {
             // TODO : implémenter
+            this.graph = graph;
+            this.nbCities = graph.Order;
+            this.meilleurCout = float.PositiveInfinity;
+            this.meilleureTournee = null;
         }
 
         // Trouve la tournée optimale dans le graphe `this.graph`
