@@ -36,8 +36,29 @@
         // Après appel à cette méthode, la matrice `m` est *modifiée*.
         public static float ReduceMatrix(Matrix m)
         {
-            // TODO : implémenter
-            return 0.0f;
+            float reductionTotale = 0;
+
+            for (int i = 0; i < m.NbRows; i++)
+            {
+                float min = float.PositiveInfinity;
+                for (int j = 0; j < m.NbColumns; j++)
+                {
+                    if(m.GetValue(i, j) < min)
+                    {
+                        min = m.GetValue(i, j);
+                    }
+                }
+                if (!float.IsPositiveInfinity(min) && min > 0)
+                {
+                    reductionTotale += min;
+                    for(int j = 0;j < m.NbColumns; j++)
+                    {
+                        m.SetValue(i,j, m.GetValue(i, j) - min);
+                    }
+                }
+            }
+
+            
         }
 
         // Renvoie le regret de valeur maximale dans la matrice de coûts `m` sous la forme d'un tuple `(int i, int j, float value)`
