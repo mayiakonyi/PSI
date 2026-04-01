@@ -58,15 +58,71 @@
                 }
             }
 
-            
+            for (int j = 0; j < m.NbColumns; j++)
+            {
+                float min = float.PositiveInfinity;
+                for (int i = 0; i < m.NbRows; i++)
+                {
+                    if (m.GetValue(i, j) < min)
+                    {
+                        min = m.GetValue(i, j);
+                    }
+                }
+                if (!float.IsPositiveInfinity(min) && min > 0)
+                {
+                    reductionTotale += min;
+                    for (int i = 0; i < m.NbRows; i++)
+                    {
+                        m.SetValue(i, j, m.GetValue(i, j) - min);
+                    }
+                }
+            }
+
+            return reductionTotale;
+
+
+
         }
 
         // Renvoie le regret de valeur maximale dans la matrice de coûts `m` sous la forme d'un tuple `(int i, int j, float value)`
         // où `i`, `j`, et `value` contiennent respectivement la ligne, la colonne et la valeur du regret maximale
         public static (int i, int j, float value) GetMaxRegret(Matrix m)
         {
-            // TODO : implémenter
-            return (0, 0, 0.0f);
+            
+                float maxRegret = -1;
+                int bestI = -1, bestJ = -1;
+
+                for (int i = 0; i < m.NbRows; i++)
+                {
+                    for (int j = 0; j < m.NbColumns; j++)
+                    {
+                        if (m.GetValue(i, j) == 0)
+                        {
+                            float minRow = float.PositiveInfinity;
+                            float minCol = float.PositiveInfinity;
+
+                            for (int k = 0; k < m.NbColumns; k++)
+                                if (k != j && m.GetValue(i, k) < minRow)
+                                    minRow = m.GetValue(i, k);
+
+                            for (int k = 0; k < m.NbRows; k++)
+                                if (k != i && m.GetValue(k, j) < minCol)
+                                    minCol = m.GetValue(k, j);
+
+                            float regret = minRow + minCol;
+
+                            if (regret > maxRegret)
+                            {
+                                maxRegret = regret;
+                                bestI = i;
+                                bestJ = j;
+                            }
+                        }
+                    }
+                }
+
+                return (bestI, bestJ, maxRegret);
+            
 
         }
 

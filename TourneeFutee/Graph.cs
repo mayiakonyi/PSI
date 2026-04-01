@@ -221,4 +221,8 @@ namespace TourneeFutee
         // TODO : ajouter toutes les methodes que vous jugerez pertinentes
         // on pourra rajouter des fonctions style degre sommet, parcours bfs/dfs, plus court chemin, etc
     }
+
+   
+
+
 }
