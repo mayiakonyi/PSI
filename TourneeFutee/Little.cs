@@ -132,9 +132,49 @@
         public static bool IsForbiddenSegment((string source, string destination) segment, List<(string source, string destination)> includedSegments, int nbCities)
         {
 
-            // TODO : implémenter
-            return false;   
-        }
+    
+                // 1. interdit si on a déjà l'inverse
+                foreach (var s in includedSegments)
+                {
+                    if (s.source == segment.destination && s.destination == segment.source)
+                        return true;
+                }
+
+                // 2. suivre le chemin pour voir si on crée une boucle
+                string current = segment.destination;
+
+                int count = 1; // nombre de villes parcourues
+
+                while (true)
+                {
+                    bool found = false;
+
+                    foreach (var s in includedSegments)
+                    {
+                        if (s.source == current)
+                        {
+                            current = s.destination;
+                            count++;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        break;
+
+                    // si on revient au point de départ → cycle
+                    if (current == segment.source)
+                    {
+                        // cycle trop petit → interdit
+                        if (count < nbCities)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+        
 
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
 
