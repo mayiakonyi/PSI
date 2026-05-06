@@ -20,7 +20,7 @@ namespace TourneeFutee
         }
 
         // Constructeur utilisé par les tests de persistance
-        public Tour(float cost, List<string> vertices)
+        public Tour(List<string> vertices,float cost)
         {
             this.segments = new List<(string, string)>();
             // On ignore graph ici car le coût est passé directement
