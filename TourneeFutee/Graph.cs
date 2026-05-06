@@ -75,6 +75,13 @@ namespace TourneeFutee
             matriceadj.AddColumn(newIndex);
         }
 
+        // Vérifie si le sommet de nom name existe dans le graphe
+        public bool ContainsVertex(string name)
+        {
+            // On vérifie simplement si le dictionnaire contient la clé
+            return nomversindex.ContainsKey(name);
+        }
+
         // Supprime le sommet de nom name du graphe (et tous les arcs associes)
         // Lève une ArgumentException si le sommet n'a pas ete trouve dans le graphe
         public void RemoveVertex(string name)
@@ -118,6 +125,8 @@ namespace TourneeFutee
 
             stockvalsom[nomversindex[name]] = value; // maj valeur
         }
+
+       
 
         // Renvoie la liste des noms des voisins du sommet de nom vertexName
         // (si ce sommet n'a pas de voisins, la liste sera vide)
