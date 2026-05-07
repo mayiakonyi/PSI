@@ -32,11 +32,7 @@ namespace TourneeFutee
                 this.AddSegment(vertices[i], vertices[i + 1]);
             }
 
-            // On ferme la boucle si on a au moins deux sommets
-            if (vertices.Count > 1)
-            {
-                this.AddSegment(vertices[vertices.Count - 1], vertices[0]);
-            }
+            
         }
 
         // ajoute un segment dans la tournee
